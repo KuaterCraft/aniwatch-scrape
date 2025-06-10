@@ -1,0 +1,23 @@
+# Each line should contain the filename of your Aniwatch list HTML file,
+# followed by a colon (:) and the category name.
+# The script will use these category names to set the 'my_status' in MyAnimeList.
+#
+# Supported categories: watching, completed, plantowatch, dropped
+#
+# Examples:
+# For your "Watching" list:
+watching.html:watching
+#
+# For your "Dropped" list:
+dropped.html:dropped
+#
+# For your "Plan to Watch" list (if it has multiple pages):
+plantowatch.html:plantowatch
+plantowatch_2.html:plantowatch
+#
+# For your "Completed" list (if it has multiple pages, e.g., 5 pages):
+completed_1.html:completed
+completed_2.html:completed
+completed_3.html:completed
+completed_4.html:completed
+completed_5.html:completed

@@ -255,3 +255,5 @@ MyAnimeList should now process your list. It might take a few moments. If succes
 ---
 
 Feel free to fork this repository, make improvements, and share it with others!
+
+I wont take credits for this script as i am a JS developer not python 😅 so credits to Gemini AI for this script 😋 

@@ -9,6 +9,8 @@ Aniwatch (and similar sites) often lack a direct export feature for your watch l
 1.  **Scraping your locally saved Aniwatch list HTML files.**
 2.  **Fetching the correct MyAnimeList (MAL) IDs** for each anime from Aniwatch's own detail pages. This is crucial for MAL to correctly identify and update your entries.
 3.  **Generating an XML file** in the precise format required by MyAnimeList for import.
+4.  **Handling multiple categories** like Watching, On hold, Completed, Plan to Watch, and Dropped.
+5.  **Creating a separate file** for any anime entries where the MAL ID could not be found, so you can manually check and update them later.
 
 ## 🔒 Is this safe?
 
@@ -20,7 +22,7 @@ Yes, this script is designed to be safe and transparent:
 - **Read-Only Operations (mostly)**:
   - It **reads** your local HTML files.
   - It makes **HTTP GET requests** to a public website (`aniwatchtv.to` or its current domain) to fetch additional publicly available data (like MAL IDs).
-  - It **creates** one new file: `mal_import.xml` in the same directory.
+  - It **creates** two new files: `mal_import.xml` and `not_found_mal_ids.txt` in the same directory.
 - **Standard Libraries**: It uses well-known and widely adopted Python libraries (`requests`, `BeautifulSoup`, `lxml`) for web interaction and parsing.
 - **No Modifications**: It does NOT modify any of your existing local HTML files or any other files on your system, other than creating the output XML.
 
@@ -35,7 +37,7 @@ Follow these steps to get your Aniwatch list into MyAnimeList.
 You need to save the HTML content of your Aniwatch "My List" pages.
 
 1.  Go to [Aniwatch (or aniwatchtv.to)](https://aniwatchtv.to/) and navigate to your "My List".
-2.  For each category (`Watching`, `Completed`, `Plan to Watch`, `Dropped`), you'll need to save the entire page.
+2.  For each category (`Watching`, `On Hold`, `Completed`, `Plan to Watch`, `Dropped`), you'll need to save the entire page.
     - **Right-click** on the page (or press `Ctrl+S` / `Cmd+S`).
     - Choose "Save As..." or "Save Page As...".
     - Select "Webpage, Complete" (or "Webpage, HTML Only" if "Complete" gives issues with file paths).
@@ -51,7 +53,7 @@ This file tells the script which local HTML files to read and what MyAnimeList s
 
 1.  In the same directory where you saved your HTML files, create a new plain text file named `html_files.txt`.
 2.  Open `html_files.txt` and list each HTML file you saved, followed by a colon (`:`) and its corresponding category.
-    - **Supported Categories**: `watching`, `completed`, `plantowatch`, `dropped`. (These are case-insensitive, but using lowercase is good practice).
+    - **Supported Categories**: `watching`, `onhold`, `completed`, `plantowatch`, `dropped`. (These are case-insensitive, but using lowercase is good practice).
     - **Example `html_files.txt` content**:
       ```
       # Each line should contain the filename of your Aniwatch list HTML file,
@@ -73,6 +75,18 @@ This file tells the script which local HTML files to read and what MyAnimeList s
 ### Step 3: Setup Your Python Environment
 
 1.  **Install Python**: If you don't have Python installed, download and install the latest version (Python 3.x) from [python.org](https://www.python.org/downloads/). Make sure to check the box "Add Python to PATH" during installation.
+
+- (Optional Step) **Install a Virtual Environment**: It's a good practice to use a virtual environment for Python projects. You can create one using:
+  `bash
+    python -m venv myenv
+    `
+  Activate it with:
+
+      - On Windows: `myenv\Scripts\activate`
+      - On macOS/Linux: `source myenv/bin/activate`
+
+      then proceed with the installation of required libraries.
+
 2.  **Install Required Libraries**: Open your terminal or command prompt and navigate to the directory where you saved `script.py` and your HTML files. Then, run the following command to install the necessary libraries:
     ```bash
     pip install requests beautifulsoup4 lxml
@@ -95,6 +109,9 @@ Open `script.py` in a text editor (like Notepad, VS Code, Sublime Text, etc.).
 
 1.  Open your terminal or command prompt.
 2.  Navigate to the directory where you have `script.py`, `html_files.txt`, and your downloaded HTML files.
+    - (Optional) If you created a virtual environment, make sure to activate it first.
+      - On Windows: `myenv\Scripts\activate`
+      - On macOS/Linux: `source myenv/bin/activate`
 3.  Execute the script using:
     ```bash
     python script.py
@@ -123,6 +140,7 @@ MyAnimeList should now process your list. It might take a few moments. If succes
 - **Aniwatch HTML Structure**: The script relies on the specific HTML structure of Aniwatch's list pages and detail pages (`<script id="syncData">`). If Aniwatch changes its website layout, the script might break and require updates.
 - **Partial Data Import**: This script primarily imports `series_animedb_id` (MAL ID), `series_title`, and `my_status` (Watching, Completed, etc.). Other fields like `my_watched_episodes` (your specific progress), `my_score`, `my_start_date`, `my_finish_date`, etc., are **not available** from the Aniwatch list pages and will not be imported by this script. You'll need to update these manually on MyAnimeList if desired.
 - **Title Matching**: While `series_animedb_id` greatly helps, occasionally MyAnimeList might still struggle with obscure titles or direct title mismatches if Aniwatch's title differs from MAL's. Manual corrections might be needed post-import.
+- **Use VPN**: If you are in a region where Aniwatch is blocked, you may need to use a VPN to access the site and run the script.
 
 ---
 

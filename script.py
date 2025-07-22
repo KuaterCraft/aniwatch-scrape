@@ -10,7 +10,14 @@ ANIWATCH_BASE_URL = "https://aniwatchtv.to" # IMPORTANT: Verify this is the curr
 REQUEST_DELAY_SECONDS = 2 # Adjust this value (e.g., 1 to 5 seconds) to avoid getting blocked.
                           # Higher values are safer but will make the script run slower.
 
+# --- Global Variables ---
+# This will store unique MAL IDs to avoid duplicates
+UNIQUE_MLA_IDS = []
+# This will store URLs of anime entries where MAL IDs were not found
+NOT_FOUND_MALS = ""
+
 def fetch_mal_id_from_detail_page(anime_url):
+    global NOT_FOUND_MALS
     """
     Fetches the MAL ID from an anime's detail page on Aniwatch.
     """
@@ -31,7 +38,13 @@ def fetch_mal_id_from_detail_page(anime_url):
             mal_id = json_data.get('mal_id')
             if mal_id:
                 print(f"  -> Found MAL ID: {mal_id}")
+                if mal_id in UNIQUE_MLA_IDS:
+                    print(f"  -> Duplicate MAL ID found: {mal_id}. Skipping.")
+                else:
+                    UNIQUE_MLA_IDS.append(mal_id)
+                # Return the MAL ID as a string
                 return str(mal_id)
+        NOT_FOUND_MALS += f"{anime_url}\n"
         print(f"  -> MAL ID not found on page: {anime_url}")
         return "0" # Default if not found
     except requests.exceptions.RequestException as e:
@@ -82,7 +95,8 @@ def parse_aniwatch_html(file_path, category):
                 'watching': 'Watching',
                 'completed': 'Completed',
                 'plantowatch': 'Plan to Watch',
-                'dropped': 'Dropped'
+                'dropped': 'Dropped',
+                'onhold': 'On Hold',
             }.get(category, 'Unknown')
 
             anime_entry = {
@@ -170,6 +184,12 @@ def main():
     print(f"Successfully generated '{output_file_name}' with {len(all_anime_entries)} anime entries.")
     print("You can now proceed to import this XML file into MyAnimeList.")
     print("Remember to check the generated 'mal_import.xml' file for any issues before importing.")
+
+    if NOT_FOUND_MALS:
+        output_file_name_not_found = "not_found_mal_ids.txt"
+        with open(output_file_name_not_found, 'w', encoding='utf-8') as f:
+            f.write(NOT_FOUND_MALS)
+        print(f"\nSaved URLs with missing MAL IDs to '{output_file_name_not_found}'.")
 
 if __name__ == "__main__":
     main()

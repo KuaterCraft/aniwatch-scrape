@@ -8,6 +8,9 @@
 # For your "Watching" list:
 watching.html:watching
 #
+# For your "On-Hold" list:
+onhold.html:onhold
+#
 # For your "Dropped" list:
 dropped.html:dropped
 #

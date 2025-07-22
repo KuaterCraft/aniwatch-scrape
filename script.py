@@ -82,7 +82,8 @@ def parse_aniwatch_html(file_path, category):
                 'watching': 'Watching',
                 'completed': 'Completed',
                 'plantowatch': 'Plan to Watch',
-                'dropped': 'Dropped'
+                'dropped': 'Dropped',
+                'onhold': 'On Hold',
             }.get(category, 'Unknown')
 
             anime_entry = {
